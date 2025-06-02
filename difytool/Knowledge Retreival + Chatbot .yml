@@ -1,0 +1,623 @@
+app:
+  description: ''
+  icon: 📑
+  icon_background: '#EFF1F5'
+  mode: advanced-chat
+  name: 'Knowledge Retreival + Chatbot '
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai_api_compatible:0.0.16@77274df8fe2632cac66bfd153fcc75aa5e96abbe92b5c611b8984ad9f4cd4457
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.5@fd6efd37c2a931911de8ab9ca3ba2da303bef146d45ee87ad896b04b36d09403
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions: []
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - remote_url
+      - local_file
+      enabled: true
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: Hi, I am an Ai assistant, how can I help you?
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: 1711528917469-1711528919501
+      source: '1711528917469'
+      sourceHandle: source
+      target: '1711528919501'
+      targetHandle: target
+      type: custom
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: variable-aggregator
+      id: 1748404962524-source-1748405014026-target
+      source: '1748404962524'
+      sourceHandle: source
+      target: '1748405014026'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: variable-aggregator
+        targetType: llm
+      id: 1748405014026-source-1711528917469-target
+      source: '1748405014026'
+      sourceHandle: source
+      target: '1711528917469'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: tool
+      id: 1748405061378-true-1748404962524-target
+      source: '1748405061378'
+      sourceHandle: 'true'
+      target: '1748404962524'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: if-else
+      id: 1711528914102-source-1748405061378-target
+      source: '1711528914102'
+      sourceHandle: source
+      target: '1748405061378'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1748405061378-false-1748404980716-target
+      source: '1748405061378'
+      sourceHandle: 'false'
+      target: '1748404980716'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: tool
+      id: 1748404980716-source-1748404966669-target
+      source: '1748404980716'
+      sourceHandle: source
+      target: '1748404966669'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: variable-aggregator
+      id: 1748404966669-source-1748405014026-target
+      source: '1748404966669'
+      sourceHandle: source
+      target: '1748405014026'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables:
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - image
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: image
+          max_length: 48
+          options: []
+          required: false
+          type: file
+          variable: image_file
+      height: 90
+      id: '1711528914102'
+      position:
+        x: 30
+        y: 275
+      positionAbsolute:
+        x: 30
+        y: 275
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: Invoking large language models to answer questions or process natural
+          language
+        memory:
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 50
+        model:
+          completion_params: {}
+          mode: chat
+          name: qwen3-8b
+          provider: langgenius/openai_api_compatible/openai_api_compatible
+        prompt_template:
+        - id: 1ad97cf7-8dfc-41c6-930f-481ea10cd27b
+          role: system
+          text: '你是一个产品推荐助手。
+
+            这是用户的问题{{#sys.query#}}
+
+            用户正在寻找某个产品，我们已经根据他们的描述从数据库中检索出了以下候选商品。请你阅读这些产品的标题、品牌、特征、用途、价格并结合用户的问题，并用自然语言总结给用户回答。列出商品的图片也就是url
+
+
+            以下是候选商品：
+
+            {{#1748405014026.output#}}
+
+
+            最终结果使用英语输出'
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 150
+      id: '1711528917469'
+      position:
+        x: 1550
+        y: 275
+      positionAbsolute:
+        x: 1550
+        y: 275
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1711528917469.text#}}'
+        desc: ''
+        selected: false
+        title: Answer
+        type: answer
+        variables: []
+      height: 105
+      id: '1711528919501'
+      position:
+        x: 1854
+        y: 275
+      positionAbsolute:
+        x: 1854
+        y: 275
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Image file
+            ja_JP: Image file
+            pt_BR: Image file
+            zh_Hans: Image file
+          label:
+            en_US: image
+            ja_JP: image
+            pt_BR: image
+            zh_Hans: image
+          llm_description: Image file
+          max: null
+          min: null
+          name: image
+          options: []
+          placeholder:
+            en_US: Image file
+            ja_JP: Image file
+            pt_BR: Image file
+            zh_Hans: Image file
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: file
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Optional text description of product
+            ja_JP: Optional text description of product
+            pt_BR: Optional text description of product
+            zh_Hans: Optional text description of product
+          label:
+            en_US: query
+            ja_JP: query
+            pt_BR: query
+            zh_Hans: query
+          llm_description: Optional text description of product
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder:
+            en_US: Optional text description of product
+            ja_JP: Optional text description of product
+            pt_BR: Optional text description of product
+            zh_Hans: Optional text description of product
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 1
+          form: llm
+          human_description:
+            en_US: Number of top matches to return
+            ja_JP: Number of top matches to return
+            pt_BR: Number of top matches to return
+            zh_Hans: Number of top matches to return
+          label:
+            en_US: top_k
+            ja_JP: top_k
+            pt_BR: top_k
+            zh_Hans: top_k
+          llm_description: Number of top matches to return
+          max: null
+          min: null
+          name: top_k
+          options: []
+          placeholder:
+            en_US: Number of top matches to return
+            ja_JP: Number of top matches to return
+            pt_BR: Number of top matches to return
+            zh_Hans: Number of top matches to return
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        params:
+          image: ''
+          query: ''
+          top_k: ''
+        provider_id: 416a9186-0fc5-45dc-9c7d-801ed16f2da9
+        provider_name: product search
+        provider_type: api
+        selected: false
+        title: searchProducts
+        tool_configurations: {}
+        tool_description: Search similar products via image and/or text
+        tool_label: searchProducts
+        tool_name: searchProducts
+        tool_parameters:
+          image:
+            type: variable
+            value:
+            - '1711528914102'
+            - image_file
+          query:
+            type: mixed
+            value: ''
+          top_k:
+            type: constant
+            value: 3
+        type: tool
+      height: 54
+      id: '1748404962524'
+      position:
+        x: 942
+        y: 275
+      positionAbsolute:
+        x: 942
+        y: 275
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Text query to describe desired product
+            ja_JP: Text query to describe desired product
+            pt_BR: Text query to describe desired product
+            zh_Hans: Text query to describe desired product
+          label:
+            en_US: query
+            ja_JP: query
+            pt_BR: query
+            zh_Hans: query
+          llm_description: Text query to describe desired product
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder:
+            en_US: Text query to describe desired product
+            ja_JP: Text query to describe desired product
+            pt_BR: Text query to describe desired product
+            zh_Hans: Text query to describe desired product
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 1
+          form: llm
+          human_description:
+            en_US: Number of top matches to return
+            ja_JP: Number of top matches to return
+            pt_BR: Number of top matches to return
+            zh_Hans: Number of top matches to return
+          label:
+            en_US: top_k
+            ja_JP: top_k
+            pt_BR: top_k
+            zh_Hans: top_k
+          llm_description: Number of top matches to return
+          max: null
+          min: null
+          name: top_k
+          options: []
+          placeholder:
+            en_US: Number of top matches to return
+            ja_JP: Number of top matches to return
+            pt_BR: Number of top matches to return
+            zh_Hans: Number of top matches to return
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        params:
+          query: ''
+          top_k: ''
+        provider_id: 416a9186-0fc5-45dc-9c7d-801ed16f2da9
+        provider_name: product search
+        provider_type: api
+        selected: false
+        title: searchProductsByText
+        tool_configurations: {}
+        tool_description: Search similar products using only text query
+        tool_label: searchProductsByText
+        tool_name: searchProductsByText
+        tool_parameters:
+          query:
+            type: mixed
+            value: '{{#1748404980716.text#}}'
+          top_k:
+            type: constant
+            value: 3
+        type: tool
+      height: 54
+      id: '1748404966669'
+      position:
+        x: 942
+        y: 369
+      positionAbsolute:
+        x: 942
+        y: 369
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - sys
+          - query
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 899477aa-55f7-4895-b02f-c6f392cb9db6
+          role: system
+          text: '你是一个产品关键词抽取助手。请从用户的自然语言问题中，**仅提取产品关键词**，用于向量搜索。
+
+            {{#sys.query#}}
+
+            📌 返回格式：
+
+            只返回提取的关键词，不要添加说明、解释或标点，英语输出。
+
+
+            🧪 示例：
+
+
+            用户输入："Can you show me a picture of the Apple AirPods Pro?"
+
+            输出：Apple AirPods Pro
+
+
+            用户输入："Where can I buy good quality wireless earbuds under $50?"
+
+            输出：wireless earbuds
+
+
+            用户输入："I''m looking for a durable stainless steel water bottle."
+
+            输出：stainless steel water bottle
+
+
+            ---
+
+
+            现在请提取用户的关键词。
+
+            '
+        selected: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1748404980716'
+      position:
+        x: 638
+        y: 369
+      positionAbsolute:
+        x: 638
+        y: 369
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        output_type: string
+        selected: false
+        title: 变量聚合器
+        type: variable-aggregator
+        variables:
+        - - '1748404966669'
+          - text
+        - - '1748404962524'
+          - text
+      height: 130
+      id: '1748405014026'
+      position:
+        x: 1246
+        y: 275
+      positionAbsolute:
+        x: 1246
+        y: 275
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: exists
+            id: 5c0a1977-7613-406a-a4f2-321f9a0b3955
+            value: ''
+            varType: file
+            variable_selector:
+            - '1711528914102'
+            - image_file
+          id: 'true'
+          logical_operator: and
+        desc: ''
+        selected: false
+        title: 条件分支
+        type: if-else
+      height: 126
+      id: '1748405061378'
+      position:
+        x: 334
+        y: 275
+      positionAbsolute:
+        x: 334
+        y: 275
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        author: Wjy
+        desc: ''
+        height: 88
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Product
+          key-word extractor","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 240
+      height: 88
+      id: '1748540377180'
+      position:
+        x: 641.2297430647221
+        y: 495.4385074070615
+      positionAbsolute:
+        x: 641.2297430647221
+        y: 495.4385074070615
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 240
+    viewport:
+      x: 186.67226122086026
+      y: 308.99654127015776
+      zoom: 0.4824533090987549
