@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+faiss-cpu
+torch
+transformers
+Pillow
